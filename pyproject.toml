@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core[pyproject]"]
+requires = ["scikit-build-core[pyproject]", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -7,7 +7,7 @@ name = "ghkss"
 version = "1.0.0"
 description = "GHKSS filter"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Konstantin Seiler", email = "list@kseiler.de" }]
 dependencies = [
@@ -32,6 +32,12 @@ exclude = [
     "main_project",
 ]
 
+[tool.scikit-build.wheel]
+license-files = ["LICENSE.txt", "third_party/CLI11/LICENSE.txt", "third_party/pybind11/LICENSE.txt", "third_party/Eigen/LICENSE.txt"]
+
 [tool.scikit-build.wheel.packages]
 ghkss = "src/ghkss"
+
+[tool.cibuildwheel]
+skip = ["pp37-*", "pp38-*"]
 

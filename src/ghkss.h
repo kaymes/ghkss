@@ -8,30 +8,31 @@
 #include <pybind11/pybind11.h>
 #endif
 
-#define WITH_DEBUG_INFO
 
 namespace ghkss {
 
+    typedef uint_fast32_t fast_uint;
+
     typedef std::vector<double> TimeSeries;
 
-    inline constexpr uint verbosity_none = 0;
-    inline constexpr uint verbosity_info = 1;
-    inline constexpr uint verbosity_high = 2;
-    inline constexpr uint verbosity_debug = 3;
-    inline constexpr uint verbosity_trace = 4;
+    inline constexpr unsigned int verbosity_none = 0;
+    inline constexpr unsigned int verbosity_info = 1;
+    inline constexpr unsigned int verbosity_high = 2;
+    inline constexpr unsigned int verbosity_debug = 3;
+    inline constexpr unsigned int verbosity_trace = 4;
 
     struct GhkssConfig {
         // The relative offsets of indices in the time series that form a delay vector.
         // The default pattern means that five consecutive indices are used.
-        std::vector<size_t> delay_vector_pattern = {0,1,2,3,4};
+        std::vector<fast_uint> delay_vector_pattern = {0,1,2,3,4};
 
         // The alignment of the delay vectors. If set to a value greater than 1, the delay vectors will only start at
         // indices that are multiples of the alignment. This is useful if the time series contains data from multiple
         // merged time series/
-        size_t delay_vector_alignment = 1;
+        fast_uint delay_vector_alignment = 1;
 
         // The dimension of the manifold onto which the data is projected.
-        size_t projection_dimension = 2;
+        fast_uint projection_dimension = 2;
 
         // The minumum number of neighbours that should be found for each delay vector.
         size_t minimum_neighbour_count = 50;
@@ -57,7 +58,7 @@ namespace ghkss {
 
         // Controls the verbosity of the messages printed to the console.
         // Zero means no output.
-        uint verbosity = verbosity_none;
+        unsigned int verbosity = verbosity_none;
 
     };
 

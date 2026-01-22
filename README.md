@@ -6,7 +6,15 @@ The algorithm is mostly kept equivalent to the original implemntation without st
 
 ## Installation
 
-As prerequisite for compilation and installing from source, the [Eigen](http://eigen.tuxfamily.org/) library must be installed. For the Python interface, the [pybind11](https://github.com/pybind/pybind11) library is required.
+The package can be installed from PyPi using pip:
+
+`pip install ghkss`
+
+### Building from source
+
+A prerequisite for compilation and installing from source is the [Eigen](http://eigen.tuxfamily.org/) library. It is recommended to install it using your system package manager before building the package (e.g., `apt-get install eigen3-dev`). Hoever, if it is missing, the build script attempts to download it directly,
+
+For the Python interface, the [pybind11](https://github.com/pybind/pybind11) library is required. It can be installed using pip: `pip install pybind11`.
 
 The command line iterface also uses the [CLI11](https://github.com/CLIUtils/CLI11) library which is shipped together with this package in the `third_party` folder and doesn't have to be installed separately.
 
@@ -19,6 +27,7 @@ The command line interface will be instaled in the `bin` directory.
 To build a redistributable wheel, run the following command:
 
 `python -m build`  
+
 If the `build` command is missing, install it using `pip install build`. 
 
 The command line interface is built as part of the python built process. To build it separately, run the following commands:
@@ -27,6 +36,8 @@ The command line interface is built as part of the python built process. To buil
 `cd build`  
 `cmake ..`  
 `make ghkss_cli`
+
+A debug build of can be created using `python -m build --wheel --config-setting="cmake.build-type=Debug"`. Such a build exposes internal intermediate results of the C++ component to Python.
 
 ## The Python interface
 
@@ -209,6 +220,15 @@ OPTIONS:
                               verbosity further. 
 
 ```
+
+## Licensing
+This package is licenced under the MIT license which can be found in the file [LICENSE.txt](LICENSE.txt).
+
+The CLI11 library contained in the third party folder is licensed under a BSD style license which can be found in the file [third_party/CLI11/LICENSE.txt](third_party/CLI11/LICENSE.txt).
+
+The Eigen library is licensed under the [MPL 2.0 license](third_party/Eigen/LICENSE.txt).
+
+
 
 ## References
 

@@ -242,7 +242,7 @@ namespace ghkss {
             auto other_dimension_distances = box_distance - our_dimension_distance_to_restore;
             if (cut_distance > 0) {
                 // We want to process the larger child first.
-                typeof(query_value) our_dimension_distance;
+                decltype(query_value) our_dimension_distance;
                 if (query_value <= node.max_value) {
                     our_dimension_distance = 0;
                 } else {
@@ -262,7 +262,7 @@ namespace ghkss {
 
             } else {
                 // We want to process the smaller child first
-                typeof(query_value) our_dimension_distance;
+                decltype(query_value) our_dimension_distance;
                 if (query_value < node.min_value) {
                     our_dimension_distance = sqr(node.min_value - query_value);
                 } else {

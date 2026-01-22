@@ -10,6 +10,10 @@
 #include <pybind11/eigen.h>
 #endif
 
+#ifdef WITH_DEBUG_INFO
+#include <mutex>
+#endif
+
 
 namespace ghkss {
 
@@ -17,6 +21,7 @@ namespace ghkss {
 
     typedef Eigen::VectorXd DelayVector;
 
+#ifdef WITH_DEBUG_INFO
     class DebugInfo {
     private:
         DebugInfo() = default;
@@ -72,6 +77,7 @@ namespace ghkss {
         };
 #endif
     };
+#endif
 
 
     DelayVector get_delay_vector_weights(const GhkssConfig& config) {
@@ -484,7 +490,7 @@ namespace ghkss {
                 Eigen::VectorXd final_deltas // Pybind creates a copy on invocation. So we return the modified results. Inefficient, but it is only for unit testing anyway.
                 ) {
 
-            size_t max_offset = 0;
+            fast_uint max_offset = 0;
             for (auto offset : config.delay_vector_pattern) {
                 max_offset = std::max(max_offset, offset);
             }
