@@ -1,0 +1,37 @@
+[build-system]
+requires = ["scikit-build-core[pyproject]"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "ghkss"
+version = "1.0.0"
+description = "GHKSS filter"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Konstantin Seiler", email = "list@kseiler.de" }]
+dependencies = [
+    "numpy",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "scipy",
+]
+demo = [
+    "scipy",
+]
+
+[tool.scikit-build.sdist]
+exclude = [
+    ".idea",
+    "*build*",
+    "dist",
+    "*.so",
+    "main_project",
+]
+
+[tool.scikit-build.wheel.packages]
+ghkss = "src/ghkss"
+
