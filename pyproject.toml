@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "ghkss"
-version = "1.0.0"
+version = "1.0.1"
 description = "GHKSS filter"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -13,6 +13,9 @@ authors = [{ name = "Konstantin Seiler", email = "list@kseiler.de" }]
 dependencies = [
     "numpy",
 ]
+
+[project.urls]
+Homepage = "https://github.com/kaymes/ghkss"
 
 [project.optional-dependencies]
 test = [
