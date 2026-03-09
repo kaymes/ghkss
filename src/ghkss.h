@@ -35,7 +35,7 @@ namespace ghkss {
         fast_uint projection_dimension = 2;
 
         // The minumum number of neighbours that should be found for each delay vector.
-        size_t minimum_neighbour_count = 50;
+        fast_uint minimum_neighbour_count = 50;
 
         // If set to a positive value, then the algorithm will consider all neighbours within the given epsilon distance,
         // even if the number of neighbours is more than minimum_neighbour_count.
@@ -50,7 +50,7 @@ namespace ghkss {
 
         // If neighbour_epsilon is positive, then this is the maximum number of neighbours that will be considered,
         // even if there are more within the epsilon distance. It is not guaranteed that the chosen neighbours are the closest ones.
-        size_t maximum_neighbour_count = std::numeric_limits<size_t>::max();
+        fast_uint maximum_neighbour_count = std::numeric_limits<fast_uint>::max();
 
         // If set to true, the distance between delay vectors will be calculated using the Euclidean norm, otherwise
         // the maximum norm is used.
