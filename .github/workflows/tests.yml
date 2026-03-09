@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ main, pytest ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, pytest ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
