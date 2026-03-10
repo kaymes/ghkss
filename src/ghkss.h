@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <optional>
+#include <cstdint>
 #include <Eigen/Dense>
 
 #ifdef WITH_PYTHON
