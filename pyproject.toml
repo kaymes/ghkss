@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "ghkss"
-version = "1.0.1"
+version = "1.0.2"
 description = "GHKSS filter"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -41,6 +41,4 @@ license-files = ["LICENSE.txt", "third_party/CLI11/LICENSE.txt", "third_party/py
 [tool.scikit-build.wheel.packages]
 ghkss = "src/ghkss"
 
-[tool.cibuildwheel]
-skip = ["pp37-*", "pp38-*"]
 

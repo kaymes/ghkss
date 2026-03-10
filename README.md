@@ -221,6 +221,14 @@ OPTIONS:
 
 ```
 
+## Contributing
+Contributing to the improvements of this package are welcome and encouraged.
+
+For issues, please report bugs and other problems at https://github.com/kaymes/ghkss/issues. When submitting issues, include minimal reproducible examples and as much information about your environment/session as possible. This will help us track down the source of the problem and fix it.
+
+For providing fixes yourself, open a pull request with the changes/patches here: https://github.com/kaymes/ghkss/pulls. We will review them before merging. When opening a pull request, please include tests and documentation clearly describing what has is being fixed if tackling a bug, or the feature that is being added.
+
+
 ## Licensing
 This package is licenced under the MIT license which can be found in the file [LICENSE.txt](LICENSE.txt).
 
