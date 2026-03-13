@@ -20,7 +20,7 @@ struct Config {
     size_t iterations = 1;
     std::vector<size_t> columns; // starting with 1
     char line_delimiter = '\n';
-    char column_delimiter = ',';
+    char column_delimiter = ' ';
     bool calculate_default_neighbour_epsilon = true;
     ghkss::GhkssConfig ghkss;
 };
@@ -36,25 +36,41 @@ private:
 Config get_config(int argc, char** argv) {
     Config config;
 
-    CLI::App app{"GHKSS drop-in replacement"};
+    CLI::App app{"GHKSS drop-in replacement xx"};
 
     // Positional datafiles (0..N). "-" means stdin; if none, read stdin.
     app.add_option("datafiles", config.datafiles, "Data files (\"-\" for stdin). For compatibility with TISEAN, by default the last valid file is being used. Use -a to filter all files.")->default_str("-");
     app.add_flag("-a,--all", config.process_all_files, "Filter all files (independently).");
 
-    app.add_option("-l,--length", config.length, "# of data to use")->option_text("UINT [whole file]")->check(CLI::PositiveNumber);
-    app.add_option("-x,--skip-lines", config.skip_lines, "# of lines to be ignored")->check(CLI::NonNegativeNumber)->capture_default_str();
+    app.add_option("-l,--length", config.length, "# of data to use")->option_text("UINT [whole file]")->check(CLI::PositiveNumber)->expected(1);
+    app.add_option("-x,--skip-lines", config.skip_lines, "# of lines to be ignored")->check(CLI::NonNegativeNumber)->capture_default_str()->expected(1);
 
-    app.add_option("-c,--columns", config.columns, "column(s) to read")
+    app.add_option_function<std::string>("-c,--columns",
+                                         [&config](const std::string& value) {
+                                             std::vector<std::string> parts = CLI::detail::split(value, ',');
+                                             for (const std::string& part : parts) {
+                                                 try {
+                                                     size_t col = std::stoul(part);
+                                                     if (col < 1) {
+                                                         throw CLI::ValidationError("--columns: Column must be a positive integer");
+                                                     }
+                                                     config.columns.push_back(col);
+                                                 } catch (const std::invalid_argument&) {
+                                                     throw CLI::ValidationError("--columns: Invalid number: " + part);
+                                                 } catch (const std::out_of_range&) {
+                                                     throw CLI::ValidationError("--columns: Number out of range: " + part);
+                                                 }
+                                             }
+                                         },
+                                         "column(s) to read")
             ->option_text("UINT[,UINT...] [1,..,# of components]")
-            ->check(CLI::PositiveNumber)
-            ->delimiter(',');
+            ->expected(1);
 
     size_t components = 1;
     size_t embedding_dimension = 5;
 
-    app.add_option("-C,--components", components, "# of components")->check(CLI::PositiveNumber)->capture_default_str();
-    app.add_option("-e,--embedding-dimension", embedding_dimension, "embedding dimension")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("-C,--components", components, "# of components")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
+    app.add_option("-e,--embedding-dimension", embedding_dimension, "embedding dimension")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
 
     app.add_option_function<std::string>(
                     "-m",
@@ -78,18 +94,19 @@ Config get_config(int argc, char** argv) {
                     },
                     "# of components,embedding dimension. Same as using -C and -e, for compatibility with TISEAN.")->type_name("INT,INT")
             ->default_str(std::to_string(components) + "," + std::to_string(embedding_dimension))
+            ->expected(1)
             ->excludes("-C")
             ->excludes("-e");
 
 
     size_t delay_delta = 1;
-    app.add_option("-d,--delay", delay_delta, "delay")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("-d,--delay", delay_delta, "delay")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
 
     config.ghkss.projection_dimension = 2;
-    app.add_option("-q,--project-dim", config.ghkss.projection_dimension, "dimension to project to")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("-q,--project-dim", config.ghkss.projection_dimension, "dimension to project to")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
 
     config.ghkss.minimum_neighbour_count = 50;
-    app.add_option("-k,--kmin", config.ghkss.minimum_neighbour_count, "minimal number of neighbours")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("-k,--kmin", config.ghkss.minimum_neighbour_count, "minimal number of neighbours")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
 
     config.ghkss.neighbour_epsilon = std::numeric_limits<double>::signaling_NaN();
     config.calculate_default_neighbour_epsilon = true;
@@ -100,9 +117,10 @@ Config get_config(int argc, char** argv) {
                                     },
                                     "minimal neighbourhood size")
             ->option_text("FLOAT [(interval of data)/1000]")
-            ->check(CLI::NonNegativeNumber);
+            ->check(CLI::NonNegativeNumber)
+            ->expected(1);
 
-    app.add_option("-i,--iterations", config.iterations, "# of iterations")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("-i,--iterations", config.iterations, "# of iterations")->check(CLI::PositiveNumber)->capture_default_str()->expected(1);
 
     app.add_flag("-2,--euclidean", config.ghkss.euclidean_norm, "use the Euclidean metric instead of the maximum norm")->capture_default_str();
 
@@ -112,9 +130,11 @@ Config get_config(int argc, char** argv) {
     app.add_option("-o,--output", config.output_file,
                    "name of output file [Default: 'datafile'.opt.n, where n is the iteration. "
                    "If no -o or -a is given, the last iteration is also written to stdout]")
-                   ->excludes("-a");
+                   ->excludes("-a")
+                   ->expected(1);
 
-    app.add_flag("-v,--verbose", config.ghkss.verbosity, "increase verbosity. Can be repeated multiple times to increase verbosity further.");
+    app.add_flag("-v,--verbose", config.ghkss.verbosity, "increase verbosity. Can be repeated multiple times to increase verbosity further.")
+            ->multi_option_policy(CLI::MultiOptionPolicy::Sum);
 
 
 
@@ -274,9 +294,53 @@ int main(int argc, char** argv) {
             }
             std::vector<double> data = read_data(filename, config);
 
-            if ( config.calculate_default_neighbour_epsilon ) {
-                const auto [min_element, max_element] = std::minmax_element(data.begin(), data.end());
-                config.ghkss.neighbour_epsilon = (*max_element - *min_element) / 1000;
+            if ( config.calculate_default_neighbour_epsilon) {
+                if ( data.empty()) {
+                    config.ghkss.neighbour_epsilon = 0;
+                } else {
+                    const auto [min_element, max_element] = std::minmax_element(data.begin(), data.end());
+                    config.ghkss.neighbour_epsilon = (*max_element - *min_element) / 1000;
+                }
+            }
+
+            if ( config.ghkss.verbosity >= ghkss::verbosity_debug) {
+                std::cerr << "GHKSS filter configuration:" << std::endl;
+
+                std::cerr << "  iterations: " << config.iterations << std::endl;
+                std::cerr << "  delay_vector_pattern: [";
+                for (size_t index = 0; index < config.ghkss.delay_vector_pattern.size(); index++) {
+                    if (index > 0) {
+                        std::cerr << ", ";
+                    }
+                    std::cerr << config.ghkss.delay_vector_pattern[index];
+                }
+                std::cerr << "]" << std::endl;
+
+                std::cerr << "  delay_vector_alignment: " << config.ghkss.delay_vector_alignment << std::endl;
+                std::cerr << "  projection_dimension: " << config.ghkss.projection_dimension << std::endl;
+                std::cerr << "  minimum_neighbour_count: " << config.ghkss.minimum_neighbour_count << std::endl;
+                std::cerr << "  neighbour_epsilon: " << config.ghkss.neighbour_epsilon << std::endl;
+                std::cerr << "  tisean_epsilon_widening: " << (config.ghkss.tisean_epsilon_widening ? "true" : "false") << std::endl;
+                std::cerr << "  maximum_neighbour_count: " << config.ghkss.maximum_neighbour_count << std::endl;
+                std::cerr << "  euclidean_norm: " << (config.ghkss.euclidean_norm ? "true" : "false") << std::endl;
+                std::cerr << "  verbosity: " << config.ghkss.verbosity << std::endl;
+                std::cerr << std::endl;
+            }
+
+            if (config.ghkss.verbosity >= ghkss::verbosity_trace) {
+                std::cerr << "  data size: " << data.size() << std::endl;
+                auto show_element_count = 100;
+                std::cerr << "  data: ";
+                for (size_t index = 0; index < show_element_count && index < data.size(); index++) {
+                    if (index > 0) {
+                        std::cerr << ", ";
+                    }
+                    std::cerr << data[index];
+                }
+                if (data.size() > show_element_count) {
+                    std::cerr << ", ...";
+                }
+                std::cerr << std::endl;
             }
 
             for (size_t iteration = 0; iteration < config.iterations; iteration++) {

@@ -3,12 +3,7 @@ import os
 import sys
 import numpy as np
 
-try:
-    import ghkss
-except ImportError:
-    SCRIPT_DIR=os.path.dirname(os.path.realpath(__file__))
-    sys.path.append(os.path.join(SCRIPT_DIR, '../src'))
-    import ghkss
+import ghkss
 
 try:
     import lorenz
