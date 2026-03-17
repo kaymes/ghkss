@@ -273,7 +273,7 @@ namespace ghkss {
         DebugInfo::instance().data.delay_vector_count = delay_vector_count;
 #endif
         if (config.verbosity >= verbosity_debug) {
-            std::cerr << "Finding neighbours for " << delay_vector_count << "delay vectors" << std::endl;
+            std::cerr << "Finding neighbours for " << delay_vector_count << " delay vectors" << std::endl;
         }
         std::vector<std::vector<SequenceIndex>> all_neighbours;
         all_neighbours.reserve(delay_vector_count);

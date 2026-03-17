@@ -51,10 +51,14 @@ install(TARGETS ghkss_python LIBRARY DESTINATION ghkss)
 
 # During development it may be handy to copy the compiled Python extension into the source tree.
 # Uncomment the following line for cmake to do so.
-add_custom_command(TARGET ghkss_python POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:ghkss_python>" "${CMAKE_CURRENT_SOURCE_DIR}/src/ghkss/$<TARGET_FILE_NAME:ghkss_python>")
+#add_custom_command(TARGET ghkss_python POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:ghkss_python>" "${CMAKE_CURRENT_SOURCE_DIR}/src/ghkss/$<TARGET_FILE_NAME:ghkss_python>")
 
 # Compile refactored TISEAN code as C++
 add_executable(ghkss_cli src/ghkss_cli.cpp src/ghkss.cpp src/knn_kdtree.cpp)
 set_target_properties(ghkss_cli PROPERTIES OUTPUT_NAME ghkss)
 target_link_libraries (ghkss_cli PRIVATE Eigen3::Eigen CLI11)
 install(TARGETS ghkss_cli DESTINATION bin)
+
+# During development it may be handy to copy the compiled Python extension into the source tree.
+# Uncomment the following line for cmake to do so.
+#add_custom_command(TARGET ghkss_cli POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:ghkss_cli>" "${CMAKE_CURRENT_SOURCE_DIR}/test/$<TARGET_FILE_NAME:ghkss_cli>")
